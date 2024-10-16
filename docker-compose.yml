@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres
+    container_name: go_db
+    environment:
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+  go_container:
+    image: go_container
+    container_name: go_container
+    build:
+      context: .
+      dockerfile: go_dockerfile
+    ports:
+      - "9090:9090"
+    restart: always
+    volumes:
+      - .:/usr/src/app:delegated
+    depends_on:
+      - db
+    command: ["tail", "-f", "/dev/null"]
+volumes:
+  pgdata: {}
